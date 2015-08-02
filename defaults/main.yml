@@ -1,0 +1,6 @@
+---
+# vim:ft=ansible:
+# defaults file for pelican
+isstatic: 'true'
+isapplication: 'true'
+pelicanprefix: '/var/www'

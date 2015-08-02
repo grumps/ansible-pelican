@@ -1,0 +1,63 @@
+---
+# vim:ft=ansible:
+
+# TODO switch to use a proxy?
+- name: add deploy keys
+  sudo_user: "{{ item.appuser }}"
+  copy: src={{ item.deploykey }} dest=/home/{{ item.appuser }}/.ssh/deploykey
+        owner="{{ item.appuser }}"
+        group="{{ item.appuser }}"
+        mode=0600
+  with_items: application
+
+# TODO variablize build dir.
+- name: clone application
+  sudo_user: "{{ item.appuser }}"
+  git: repo={{ item.repo }}
+       dest=/home/{{ item.appuser }}/{{ item.name }}/application
+       accept_hostkey=yes
+       key_file=/home/{{ item.appuser }}/.ssh/deploykey
+       ssh_opts="-o StrictHostKeyChecking=no"
+       depth=1
+  with_items: application
+
+- name: change application dir permissions
+  file: path=/var/www/{{ item.name }}
+        mode=0755
+        owner="{{ item.appuser }}"
+        group="{{ item.appuser }}"
+        state=directory
+  with_items: application
+
+- name: install virtualenv requirements
+  sudo_user: "{{ item.appuser }}"
+  pip: requirements=/home/{{ item.appuser }}/{{ item.name }}/application/requirements.txt
+       virtualenv=/home/{{ item.appuser }}/{{ item.name }}
+  with_items: application
+
+# We're gonna use a user with a home dir, because we don't want a libs living in
+# www directory unless we have to.
+- name: generate HTML 
+  command: >
+          /home/{{ item.appuser }}/{{ item.name }}/bin/python
+          /home/{{ item.appuser }}/{{ item.name }}/bin/pelican
+          -s publishconf.py
+          -o {{ pelicanprefix }}/{{ item.name }}
+          chdir=/home/{{ item.appuser }}/{{ item.name }}/application
+  with_items: application
+
+- name: change application dir permissions
+  file: path=/var/www/{{ item.name }}
+        mode=0755
+        owner="{{ item.appuser }}"
+        group="www-data"
+        state=directory
+        recurse=yes
+  with_items: application
+
+- name: cleanup deploy keys
+  sudo_user: "{{ item.appuser }}"
+  file: path=/home/{{ item.appuser }}/.ssh/deploykey
+        state=absent
+  with_items: application
+

@@ -1,0 +1,18 @@
+---
+# vim:ft=ansible:
+
+# Install any python lib dependencies.
+- name: install python-dev
+  apt: name={{ item }} state=present
+  with_items:
+    - python-dev
+    - python-pip
+    - supervisor
+    - memcached
+
+- name: install virtualenv package
+  pip: name=virtualenv
+
+- include: deploy.yml
+  tags:
+    - deploy
