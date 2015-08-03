@@ -67,7 +67,10 @@ Author Information
 ------------------
 
 Writen by Max Resnick a software engineer and ex-project manager in Portland, OR.
-website: https://ofmax.li
-contact: max at ofmax.li
+
+* website: https://ofmax.li
+* contact: max at ofmax.li
+* GPG: 97D14D14
+* https://keybase.io/mjr
 
 [1]: https://developer.github.com/guides/using-ssh-agent-forwarding/
