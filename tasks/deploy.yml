@@ -4,15 +4,13 @@
 # We do this via the logged in user, so that ssh forwarding agent can be utilized.
 # No ssh keys repuired in production.
 
-- debug: var=build_path
-  tags: debug
 - name: clone app to tmp
   sudo: no
   git: repo={{ item.repo }}
        dest=/tmp/{{ item.name }}
        accept_hostkey=yes
-       ssh_opts="-o StrictHostKeyChecking=no"
        depth=1
+       version={{ git_version }}
   with_items: application
 
 # We move to our build user, utilize sudo so we KNOW we have perms.
