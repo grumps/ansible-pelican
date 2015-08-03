@@ -1,7 +1,11 @@
 Role Name
 =========
 
-This role installs pelican in a virtual environment, and generates html into a web root directory. The role doesn’t install a webserver, and expects there to be another role to manage the webserver. The role expectes the pelican application to be in a git repository such as Github or Bitbucket. We generate HTML output using publishconf.py. Currently only supports Debian Jessie and Wheezy. This should work just fine on Ubuntu as well. With hopes of support on CentOS/RHEL soon. 
+This role installs pelican in a virtual environment, and generates html into a web root directory. The role doesn’t install a webserver, and expects there to be another role to manage the webserver. The role expectes the pelican application to be in a git repository such as Github or Bitbucket. We generate HTML output using publishconf.py. 
+
+*Please note:* Currently only supports Debian Jessie and Wheezy. This should work just fine on Ubuntu as well. With hopes of support on CentOS/RHEL as soon as I get more free time. Probably early fall '15
+
+All enhancements and features are tracked in [Github Issues.][2]
 
 Requirements
 ------------
@@ -11,7 +15,8 @@ This role expect keys for deployment to be utilized via an [ssh agent forwarded]
 Role Variables
 --------------
 
-A pelicanapp dictionary app must exist for each site as follows and do not have defaults. _note this will deploy multiple sites but they currently all need to use the same git version..._
+### Undefined Variables
+A pelicanapp dictionary app must exist for each site as follows and do not have defaults. 
 ```
 pelicanapp:
     - {
@@ -24,13 +29,18 @@ build_user: 'buildmaster'
 * `pelicanapp.repo` is uri for the github repo.
 * `build_user` this is the name of linux user, used to generate the HTML. This user will be given write permssions for the `web_root/pelicanapp.name` directory.
 
-"Role" level default variables:
+### Variables with Defaults:
+
 * `build_path_prefix: '/home'` This should probably not be changed, instead if you wish to not use the `build_user` home directory, then override `build_path`
 * `build_path: "{{ build_path_prefix }}/{{ build_user }}"` This is where the pelican app will be installed. It will be installed in `build_path/pelicanapp.name/application`
 * `web_root: "/var/www"` This dir will be concatenated with `pelicanapp.name` HTML will live here.
 * `git_version: "master"` This is the version that's checked out.
 
-_note `vars/main.yml`_ contains `application` but is set to `pelicanapp`. Dont' mess with that :-)
+### Usage notes
+
+ * `vars/main.yml` contains `application` but is set to `pelicanapp`. Don't mess with that.
+ * Also note at the moment we do support multiple sites, but the need to deploy the same tag or branch from git.
+
 
 Dependencies
 ------------
@@ -74,3 +84,4 @@ Writen by Max Resnick a software engineer and ex-project manager in Portland, OR
 * https://keybase.io/mjr
 
 [1]: https://developer.github.com/guides/using-ssh-agent-forwarding/
+[2]: https://github.com/grumps/ansible-pelican/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen++is%3Aenhancement
