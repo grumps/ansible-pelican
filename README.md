@@ -1,7 +1,7 @@
 Role Name
 =========
 
-This role installs pelican in a virtual environment, and generates html into a web root directory. The role doesn’t install a webserver, and expects there to be another role to manage the webserver. The role expectes the pelican application to be in a git repository such as Github or Bitbucket. We generate HTML output using publishconf.py.
+This role installs pelican in a virtual environment, and generates html into a web root directory. The role doesn’t install a webserver, and expects there to be another role to manage the webserver. The role expectes the pelican application to be in a git repository such as Github or Bitbucket. We generate HTML output using publishconf.py. Currently only supports Debian Jessie and Wheezy. This should work just fine on Ubuntu as well. With hopes of support on CentOS/RHEL soon. 
 
 Requirements
 ------------
@@ -66,6 +66,8 @@ GPLv3
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Writen by Max Resnick a software engineer and ex-project manager in Portland, OR.
+website: https://ofmax.li
+contact: max at ofmax.li
 
 [1]: https://developer.github.com/guides/using-ssh-agent-forwarding/
