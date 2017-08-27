@@ -13,7 +13,7 @@
   pip: name=virtualenv
 
 - name: add deploy_user
-  user: name={{ deploy_user }} system=yes append=yes
+  user: name={{ deploy_user }} system=yes append=yes shell=/usr/sbin/nologin
 
 - include: deploy.yml
   tags:
