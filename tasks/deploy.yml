@@ -6,72 +6,64 @@
 
 - name: clone app to tmp
   sudo: no
-  git: repo={{ item.repo }}
-       dest=/tmp/{{ item.name }}
+  git: repo={{ repo }}
+       dest=/tmp/{{ domain }}
        accept_hostkey=yes
        depth=1
        version={{ git_version }}
-  with_items: application
 
 # We move to our build user, utilize sudo so we KNOW we have perms.
 - name: move to build directory
   sudo: yes
   command: > 
            rsync --recursive --links --delete-after --whole-file --cvs-exclude
-           /tmp/{{ item.name }}/
-           {{ build_path }}/{{ item.name }}/application
-  with_items: application
+           /tmp/{{ domain }}/
+           {{ build_path }}/{{ domain }}/application
 
 # Remove dir created by clone.
 - name: remove tmp directory from git clone
   file: >
-       path=/tmp/{{ item.name }}
+       path=/tmp/{{ domain }}
        state=absent
-  with_items: application
 
 - name: change ownership of application to build_user
   sudo: yes
-  file: path={{ build_path}}/{{ item.name }}
+  file: path={{ build_path }}/{{ domain }}
         mode=0755
-        owner="{{ build_user }}"
-        group="{{ build_user }}"
+        owner='{{ build_user }}'
+        group='{{ build_user }}'
         state=directory
-  with_items: application
   tags:
     - debug
 
 # TOOD handle web user group for RPM vs Debian systems.
 - name: change web_root dir permissions
-  file: path={{ web_root }}/{{ item.name }}
+  file: path={{ web_root }}/{{ domain }}
         mode=0755
-        owner="{{ build_user }}"
-        group="www-data"
+        owner='{{ build_user }}'
+        group='www-data'
         state=directory
-  with_items: application
 
 - name: install virtualenv requirements
-  sudo_user: "{{ item.appuser }}"
-  pip: requirements={{ build_path }}/{{ item.name }}/application/requirements.txt
-       virtualenv={{ build_path }}/{{ item.name }}
-  with_items: application
+  sudo_user: '{{ item.appuser }}'
+  pip: requirements={{ build_path }}/{{ domain }}/application/requirements.txt
+       virtualenv={{ build_path }}/{{ domain }}
 
 # We're gonna use a user with a home dir, because we don't want a libs living in
 # www directory unless we have to.
 - name: generate HTML 
   command: >
-          {{ build_path }}/{{ item.name }}/bin/python
-          {{ build_path }}/{{ item.name }}/bin/pelican
+          {{ build_path }}/{{ domain }}/bin/python
+          {{ build_path }}/{{ domain }}/bin/pelican
           -s publishconf.py
-          -o {{ web_root }}/{{ item.name }}
-          chdir={{ build_path }}/{{ item.name }}/application
-  with_items: application
+          -o {{ web_root }}/{{ domain }}
+          chdir={{ build_path }}/{{ domain }}/application
 
 # TOOD handle web user group for RPM vs Debian systems.
 - name: make sure webserver group has read permissions
-  file: path={{ web_root }}/{{ item.name }}
+  file: path={{ web_root }}/{{ domain }}
         mode=0755
-        owner="{{ build_user }}"
-        group="www-data"
+        owner='{{ build_user }}'
+        group='www-data'
         state=directory
         recurse=yes
-  with_items: application

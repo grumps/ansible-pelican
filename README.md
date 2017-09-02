@@ -15,19 +15,7 @@ This role expect keys for deployment to be utilized via an [ssh agent forwarded]
 Role Variables
 --------------
 
-### Undefined Variables
-A pelicanapp dictionary app must exist for each site as follows and do not have defaults. 
-```
-pelicanapp:
-    - {
-        name: 'ofmax.li',
-        repo: 'git@github.com:grumps/ofmax.li.git',
-       }
-build_user: 'buildmaster'
-```
-* `pelicanapp.name` should be the name of the site, this will be used for directory names.
-* `pelicanapp.repo` is uri for the github repo.
-* `build_user` this is the name of linux user, used to generate the HTML. This user will be given write permssions for the `web_root/pelicanapp.name` directory.
+
 
 ### Variables with Defaults:
 
@@ -52,22 +40,10 @@ Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 ```
-# static_site.yml
-- hosts: static_site
-  sudo: True
   roles:
-    - ansible-pelican
+    - { role: ansible-pelican, domain: foo.bar, repo: foo.bar/user/repo }
 ```
 
-```
-# group_vars/static_site.yml
-pelicanapp:
-    - {
-        name: 'ofmax.li',
-        repo: 'git@github.com:grumps/ofmax.li.git',
-       }
-build_user: 'zul'
-```
 License
 -------
 
